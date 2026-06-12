@@ -1,0 +1,50 @@
+:root {
+  --color-primary: #01435f;
+  --color-primary-hover: #012d40;
+  --color-secondary: #05648d;
+  --color-tertiary: #0778a8;
+  --color-sky-blue: #019FE3;
+  --color-silver: #E7EDF1;
+  --color-silver-dark: #D8E1E8;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-danger: #FF1F46;
+  --color-danger-hover: #d91a3a;
+  --color-success: #0DC005;
+  --color-success-text: #166534;
+  --color-success-bg: #dcfce7;
+  --color-warning: #FEA701;
+  --color-warning-text: #7a5200;
+  --color-warning-bg: #ffd666;
+  --color-info: #4688FF;
+  --color-info-text: #1d4ed8;
+  --color-info-bg: #dbeafe;
+  --color-text-dark: #171F26;
+  --color-text-gray: #535B61;
+  --color-text-muted: #7F8991;
+  --color-purple: #832EDB;
+  --color-step: #B4328B;
+
+  --bg-content: #F7FBFF;
+  --bg-card: var(--color-white);
+  --bg-disabled: #F3F4F5;
+  --bg-navbar: #1a1a2e;
+
+  --border-card: #D8E0E8;
+  --border-input: var(--color-silver-dark);
+  --border-radius-card: 6px;
+  --border-radius-btn: 5px;
+  --border-radius-input: 2px;
+
+  --font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+  --font-size-base: 10px;
+  --font-size-title: 14px;
+  --font-size-subtitle: 11px;
+  --font-weight-bold: 600;
+
+  --btn-height: 30px;
+  --btn-padding-x: 1em;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

@@ -1,27 +1,27 @@
 .status-container {
-  max-width: 600px;
+  max-width: var(--container-max-width, 600px);
   margin: 0 auto;
   padding: 1.5rem;
 
   h1 {
     margin-bottom: 1rem;
-    font-size: 1.5rem;
-    color: #1a1a2e;
+    font-size: var(--font-size-title, 14px);
+    color: var(--color-text-dark);
   }
 }
 
 .card {
-  background: #fff;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--border-radius-card);
   padding: 1.25rem;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
+  box-shadow: var(--shadow-sm);
 
   h2 {
     margin: 0;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--color-text-dark);
   }
 }
 
@@ -36,11 +36,11 @@
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
 
   &.online {
-    background: #d4edda;
-    color: #155724;
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
   }
 
   &.offline {
@@ -56,27 +56,41 @@
 
 .info-item {
   font-size: 0.9rem;
+  color: var(--color-text-gray);
 
   span {
-    font-weight: 600;
-    color: #555;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-dark);
     margin-right: 0.5rem;
   }
 }
 
 .error {
   background: #fdf0ef;
-  border-color: #e74c3c;
+  border-color: var(--color-danger);
   color: #c0392b;
+  font-weight: var(--font-weight-bold);
 }
 
 .btn {
-  padding: 0.5rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--btn-padding-x, 1em);
+  height: var(--btn-height, 30px);
   border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  border-radius: var(--border-radius-btn);
+  font-size: var(--font-size-base, 10px);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family);
   cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
 
   &:disabled {
     opacity: 0.5;
@@ -85,10 +99,10 @@
 }
 
 .btn-primary {
-  background: #4a90d9;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-white);
 
   &:hover:not(:disabled) {
-    background: #357abd;
+    background: var(--color-primary-hover);
   }
 }

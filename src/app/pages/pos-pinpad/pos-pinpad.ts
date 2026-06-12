@@ -37,7 +37,7 @@ export class PosPinpadComponent {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.error || err.message || 'Error al procesar el pago');
+        this.error.set(err.friendlyMessage || err.error?.error || err.message || 'Error al procesar el pago');
         this.loading.set(false);
       }
     });
@@ -61,7 +61,7 @@ export class PosPinpadComponent {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.error || 'Error al anular el pago');
+        this.error.set(err.friendlyMessage || err.error?.error || 'Error al anular el pago');
         this.loading.set(false);
       }
     });
@@ -74,7 +74,7 @@ export class PosPinpadComponent {
         this.error.set('');
       },
       error: (err) => {
-        this.error.set(err.error?.error || 'Error al cancelar');
+        this.error.set(err.friendlyMessage || err.error?.error || 'Error al cancelar');
       }
     });
   }
