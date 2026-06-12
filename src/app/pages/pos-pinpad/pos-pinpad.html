@@ -1,0 +1,82 @@
+<div class="pos-container">
+  <h1>POS Pinpad</h1>
+
+  <div class="card">
+    <h2>Procesar Pago</h2>
+
+    <div class="form-group">
+      <label for="amount">Monto</label>
+      <input
+        id="amount"
+        type="number"
+        [ngModel]="amount()"
+        (ngModelChange)="amount.set($event)"
+        step="0.01"
+        min="0.01"
+        max="999999.99"
+        placeholder="0.00"
+        [disabled]="loading()"
+      />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="currency">Moneda</label>
+        <select id="currency" [ngModel]="currency()" (ngModelChange)="currency.set($event)" [disabled]="loading()">
+          <option value="PEN">PEN</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="merchant">Comercio</label>
+        <input
+          id="merchant"
+          type="text"
+          [ngModel]="merchantId()"
+          (ngModelChange)="merchantId.set($event)"
+          [disabled]="loading()"
+        />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" (click)="processPayment()" [disabled]="loading() || amount() <= 0">
+        {{ loading() ? 'Procesando...' : 'Pagar' }}
+      </button>
+      <button class="btn btn-danger" (click)="voidPayment()" [disabled]="loading() || !response()">
+        Anular
+      </button>
+      <button class="btn btn-warning" (click)="cancelPayment()" [disabled]="!loading()">
+        Cancelar
+      </button>
+      <button class="btn btn-secondary" (click)="clear()" [disabled]="loading()">
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="card error">
+      <strong>Error:</strong> {{ error() }}
+    </div>
+  }
+
+  @if (response()) {
+    <div class="card response" [class.approved]="response()!.responseCod === '00'" [class.declined]="response()!.responseCod !== '00'">
+      <h2>Respuesta</h2>
+      <table>
+        <tr><td>Código</td><td>{{ response()!.responseCod }}</td></tr>
+        <tr><td>Mensaje</td><td>{{ response()!.message }}</td></tr>
+        <tr><td>Marca</td><td>{{ response()!.brand }}</td></tr>
+        <tr><td>Tarjeta</td><td>{{ response()!.card }}</td></tr>
+        <tr><td>Aprobación</td><td>{{ response()!.approvalCode }}</td></tr>
+        <tr><td>Referencia</td><td>{{ response()!.reference }}</td></tr>
+        <tr><td>Terminal</td><td>{{ response()!.terminalId }}</td></tr>
+        <tr><td>Transacción</td><td>{{ response()!.transactionId }}</td></tr>
+        <tr><td>Lote</td><td>{{ response()!.batchNumber }}</td></tr>
+        <tr><td>Cuotas</td><td>{{ response()!.numInstallments }}</td></tr>
+        <tr><td>Fecha/Hora</td><td>{{ response()!.dateTime }}</td></tr>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,94 @@
+.status-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  h1 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #1a1a2e;
+  }
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.online {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  &.offline {
+    background: #f8d7da;
+    color: #721c24;
+  }
+}
+
+.info-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.info-item {
+  font-size: 0.9rem;
+
+  span {
+    font-weight: 600;
+    color: #555;
+    margin-right: 0.5rem;
+  }
+}
+
+.error {
+  background: #fdf0ef;
+  border-color: #e74c3c;
+  color: #c0392b;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: #4a90d9;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #357abd;
+  }
+}

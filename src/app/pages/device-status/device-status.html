@@ -1,0 +1,45 @@
+<div class="status-container">
+  <h1>Estado del Dispositivo</h1>
+
+  <div class="card">
+    <div class="status-header">
+      <h2>Servicio Izipay Tray</h2>
+      <span class="badge" [class.online]="health()" [class.offline]="!health()">
+        {{ health() ? 'Online' : 'Offline' }}
+      </span>
+    </div>
+
+    @if (health()) {
+      <div class="info-grid">
+        <div class="info-item"><span>Servicio:</span> {{ health()!.service }}</div>
+        <div class="info-item"><span>Versión:</span> {{ health()!.version }}</div>
+        <div class="info-item"><span>Estado:</span> {{ health()!.status }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="card">
+    <div class="status-header">
+      <h2>PIN Pad</h2>
+      <span class="badge" [class.online]="device()?.connected" [class.offline]="!device()?.connected">
+        {{ device()?.connected ? 'Conectado' : 'Desconectado' }}
+      </span>
+    </div>
+
+    @if (device()) {
+      <div class="info-grid">
+        <div class="info-item"><span>Puerto:</span> {{ device()!.port }}</div>
+        <div class="info-item"><span>Vendor ID:</span> {{ device()!.vendorId }}</div>
+        <div class="info-item"><span>Descripción:</span> {{ device()!.description }}</div>
+      </div>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="card error">{{ error() }}</div>
+  }
+
+  <button class="btn btn-primary" (click)="refresh()" [disabled]="loading()">
+    {{ loading() ? 'Consultando...' : 'Refrescar' }}
+  </button>
+</div>
