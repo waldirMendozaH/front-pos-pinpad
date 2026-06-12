@@ -9,7 +9,14 @@ import { HealthResponse } from '../models/health-response.interface';
 @Injectable({ providedIn: 'root' })
 export class IzipayService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/api';
+  private readonly baseUrl = this.getBaseUrl();
+
+  private getBaseUrl(): string {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return '/api';
+    }
+    return 'https://localhost:8383';
+  }
 
   health(): Observable<HealthResponse> {
     return this.http.get<HealthResponse>(`${this.baseUrl}/health`);
