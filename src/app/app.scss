@@ -31,6 +31,59 @@
       border-bottom: 2px solid var(--color-sky-blue);
     }
   }
+
+  .navbar-spacer {
+    flex: 1;
+  }
+
+  .service-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+
+    &.online {
+      background: rgba(0, 230, 118, 0.15);
+      color: #00e676;
+
+      .status-dot {
+        background: #00e676;
+      }
+    }
+
+    &.offline {
+      background: rgba(255, 61, 0, 0.15);
+      color: #ff6b6b;
+
+      .status-dot {
+        background: #ff3d00;
+      }
+    }
+
+    &.checking {
+      background: rgba(255, 193, 7, 0.15);
+      color: #ffc107;
+
+      .status-dot {
+        background: #ffc107;
+        animation: pulse 1s ease-in-out infinite;
+      }
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .main {

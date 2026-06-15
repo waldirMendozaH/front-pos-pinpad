@@ -2,107 +2,119 @@
   max-width: var(--container-max-width, 600px);
   margin: 0 auto;
   padding: 1.5rem;
-
-  h1 {
-    margin-bottom: 1rem;
-    font-size: var(--font-size-title, 14px);
-    color: var(--color-text-dark);
-  }
 }
 
-.card {
-  background: var(--bg-card);
-  border: 1.5px solid var(--border-card);
-  border-radius: var(--border-radius-card);
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: var(--shadow-sm);
-
-  h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--color-text-dark);
-  }
-}
-
-.status-header {
+.page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-card);
 
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: var(--font-weight-bold);
-
-  &.online {
-    background: var(--color-success-bg);
-    color: var(--color-success-text);
-  }
-
-  &.offline {
-    background: #f8d7da;
-    color: #721c24;
-  }
-}
-
-.info-grid {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.info-item {
-  font-size: 0.9rem;
-  color: var(--color-text-gray);
-
-  span {
-    font-weight: var(--font-weight-bold);
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
     color: var(--color-text-dark);
-    margin-right: 0.5rem;
+  }
+
+  .last-refresh {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    background: var(--bg-disabled);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
   }
 }
 
-.error {
-  background: #fdf0ef;
-  border-color: var(--color-danger);
-  color: #c0392b;
-  font-weight: var(--font-weight-bold);
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
 
-.btn {
+.btn-refresh {
+  background: linear-gradient(135deg, var(--color-primary), #0052a3);
+  color: var(--color-white);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 var(--btn-padding-x, 1em);
-  height: var(--btn-height, 30px);
-  border: none;
-  border-radius: var(--border-radius-btn);
-  font-size: var(--font-size-base, 10px);
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
   font-weight: var(--font-weight-bold);
   font-family: var(--font-family);
+  border: none;
+  border-radius: var(--border-radius-btn);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+    transform: translateY(-1px);
+  }
 
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
+  }
+
+  .refresh-icon {
+    transition: transform 0.5s ease;
+  }
+
+  &:hover:not(:disabled) .refresh-icon {
+    transform: rotate(180deg);
+  }
+
+  &:active:not(:disabled) .refresh-icon {
+    transform: rotate(360deg);
   }
 }
 
-.btn-primary {
-  background: var(--color-primary);
-  color: var(--color-white);
+.auto-refresh-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-text-gray);
+  cursor: pointer;
 
-  &:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+  input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--color-primary);
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.device-card,
+.service-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.info-item {
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e8ecef;
   }
 }

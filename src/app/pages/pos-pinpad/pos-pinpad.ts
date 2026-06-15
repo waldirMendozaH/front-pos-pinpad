@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IzipayService } from '../../services/izipay.service';
 import { PaymentResponse } from '../../models/payment-response.interface';
@@ -12,14 +12,27 @@ import { PaymentResponse } from '../../models/payment-response.interface';
 export class PosPinpadComponent {
   private readonly izipayService = inject(IzipayService);
 
-  protected amount = signal<number>(0);
-  protected currency = signal<string>('PEN');
-  protected merchantId = signal<string>('1000131');
-  protected loading = signal<boolean>(false);
-  protected response = signal<PaymentResponse | null>(null);
-  protected error = signal<string>('');
+  readonly amount = signal<number>(0);
+  readonly currency = signal<string>('PEN');
+  readonly merchantId = signal<string>('1000131');
+  readonly loading = signal<boolean>(false);
+  readonly response = signal<PaymentResponse | null>(null);
+  readonly error = signal<string>('');
+  readonly amountError = signal<string>('');
+
+  readonly currencyPrefix = computed(() => this.currency() === 'PEN' ? 'S/' : '$');
 
   processPayment(): void {
+    this.amountError.set('');
+    if (this.amount() <= 0) {
+      this.amountError.set('El monto debe ser mayor a 0');
+      return;
+    }
+    if (this.amount() > 999999.99) {
+      this.amountError.set('El monto máximo es 999,999.99');
+      return;
+    }
+
     this.loading.set(true);
     this.response.set(null);
     this.error.set('');
@@ -83,5 +96,6 @@ export class PosPinpadComponent {
     this.response.set(null);
     this.error.set('');
     this.amount.set(0);
+    this.amountError.set('');
   }
 }

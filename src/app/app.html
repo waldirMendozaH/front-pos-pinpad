@@ -2,6 +2,12 @@
   <span class="brand">POS Pinpad</span>
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Pago</a>
   <a routerLink="/device" routerLinkActive="active">Dispositivo</a>
+  <a routerLink="/tests" routerLinkActive="active">Tests</a>
+  <div class="navbar-spacer"></div>
+  <div class="service-status" [class.online]="serviceOnline()" [class.offline]="!serviceOnline()" [class.checking]="checkingService()">
+    <span class="status-dot"></span>
+    <span class="status-text">{{ checkingService() ? 'Verificando...' : serviceOnline() ? 'Online' : 'Offline' }}</span>
+  </div>
 </nav>
 
 <main class="main">

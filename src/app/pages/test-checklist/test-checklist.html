@@ -1,0 +1,91 @@
+<div class="checklist-container">
+  <div class="header">
+    <h1>Checklist de Pruebas</h1>
+    <p>Verificación completa de integración con Izipay PinPad</p>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-stats">
+      <div class="stat">
+        <span class="stat-value">{{ summary.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat stat-passed">
+        <span class="stat-value">{{ summary.passed }}</span>
+        <span class="stat-label">Pasadas</span>
+      </div>
+      <div class="stat stat-failed">
+        <span class="stat-value">{{ summary.failed }}</span>
+        <span class="stat-label">Fallidas</span>
+      </div>
+      <div class="stat stat-running">
+        <span class="stat-value">{{ summary.running }}</span>
+        <span class="stat-label">Ejecutando</span>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progressPercent"></div>
+    </div>
+    <span class="progress-text">{{ progressPercent }}% completado</span>
+  </div>
+
+  <div class="controls">
+    <div class="filter-group">
+      <label for="category-filter">Filtrar:</label>
+      <select id="category-filter" [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)">
+        @for (cat of categories; track cat.value) {
+          <option [value]="cat.value">{{ cat.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="actions-group">
+      <button class="btn btn-primary" (click)="runAll()" [disabled]="runningAll()">
+        @if (runningAll()) {
+          <span class="spinner"></span> Ejecutando...
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Ejecutar Todas
+        }
+      </button>
+      <button class="btn btn-secondary" (click)="resetAll()" [disabled]="runningAll()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Resetear
+      </button>
+    </div>
+  </div>
+
+  <div class="test-list">
+    @for (test of filteredTests; track test.id) {
+      <div class="test-item" [class]="test.status">
+        <div class="test-icon">
+          @switch (test.status) {
+            @case ('passed') { <span class="icon-check">&#10003;</span> }
+            @case ('failed') { <span class="icon-cross">&#10007;</span> }
+            @case ('running') { <span class="spinner-small"></span> }
+            @default { <span class="icon-pending">&#9675;</span> }
+          }
+        </div>
+        <div class="test-content">
+          <div class="test-header">
+            <span class="test-name">{{ test.name }}</span>
+            <span class="test-category category-{{ test.category }}">{{ test.category }}</span>
+          </div>
+          <p class="test-description">{{ test.description }}</p>
+          @if (test.result) {
+            <p class="test-result" [class.result-passed]="test.status === 'passed'" [class.result-failed]="test.status === 'failed'">
+              {{ test.result }}
+            </p>
+          }
+        </div>
+        <button class="btn btn-run-single" (click)="runSingleTest(test.id)" [disabled]="runningAll() || test.status === 'running'">
+          @if (test.status === 'running') {
+            <span class="spinner-small"></span>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Ejecutar
+          }
+        </button>
+      </div>
+    }
+  </div>
+</div>

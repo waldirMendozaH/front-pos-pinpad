@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { IzipayService } from '../../services/izipay.service';
 import { DeviceInfo } from '../../models/device-info.interface';
 import { HealthResponse } from '../../models/health-response.interface';
@@ -8,16 +8,23 @@ import { HealthResponse } from '../../models/health-response.interface';
   templateUrl: './device-status.html',
   styleUrl: './device-status.scss'
 })
-export class DeviceStatusComponent implements OnInit {
+export class DeviceStatusComponent implements OnInit, OnDestroy {
   private readonly izipayService = inject(IzipayService);
+  private refreshInterval: any = null;
 
-  protected health = signal<HealthResponse | null>(null);
-  protected device = signal<DeviceInfo | null>(null);
-  protected loading = signal<boolean>(false);
-  protected error = signal<string>('');
+  readonly health = signal<HealthResponse | null>(null);
+  readonly device = signal<DeviceInfo | null>(null);
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string>('');
+  readonly lastRefresh = signal<string>('');
+  readonly autoRefresh = signal<boolean>(false);
 
   ngOnInit(): void {
     this.refresh();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoRefresh();
   }
 
   refresh(): void {
@@ -31,17 +38,42 @@ export class DeviceStatusComponent implements OnInit {
           next: (d) => {
             this.device.set(d);
             this.loading.set(false);
+            this.lastRefresh.set(new Date().toLocaleTimeString());
           },
           error: (err) => {
-            this.error.set(err.error?.error || 'Error al obtener info del dispositivo');
+            this.error.set(err.friendlyMessage || err.error?.error || 'Error al obtener info del dispositivo');
             this.loading.set(false);
+            this.lastRefresh.set(new Date().toLocaleTimeString());
           }
         });
       },
       error: (err) => {
-        this.error.set(err.error?.error || 'Servicio no disponible');
+        this.error.set(err.friendlyMessage || err.error?.error || 'Servicio no disponible');
         this.loading.set(false);
+        this.lastRefresh.set(new Date().toLocaleTimeString());
       }
     });
+  }
+
+  toggleAutoRefresh(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.autoRefresh.set(checked);
+    if (checked) {
+      this.startAutoRefresh();
+    } else {
+      this.stopAutoRefresh();
+    }
+  }
+
+  private startAutoRefresh(): void {
+    this.stopAutoRefresh();
+    this.refreshInterval = setInterval(() => this.refresh(), 30000);
+  }
+
+  private stopAutoRefresh(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
   }
 }

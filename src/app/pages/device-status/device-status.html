@@ -1,9 +1,17 @@
 <div class="status-container">
-  <h1>Estado del Dispositivo</h1>
+  <div class="page-header">
+    <h1>Estado del Dispositivo</h1>
+    @if (lastRefresh()) {
+      <span class="last-refresh">Última actualización: {{ lastRefresh() }}</span>
+    }
+  </div>
 
-  <div class="card">
-    <div class="status-header">
-      <h2>Servicio Izipay Tray</h2>
+  <div class="card service-card">
+    <div class="card-header">
+      <div class="header-left">
+        <div class="status-dot" [class.online]="health()" [class.offline]="!health()" [class.checking]="loading()"></div>
+        <h2>Servicio Izipay Tray</h2>
+      </div>
       <span class="badge" [class.online]="health()" [class.offline]="!health()">
         {{ health() ? 'Online' : 'Offline' }}
       </span>
@@ -11,16 +19,30 @@
 
     @if (health()) {
       <div class="info-grid">
-        <div class="info-item"><span>Servicio:</span> {{ health()!.service }}</div>
-        <div class="info-item"><span>Versión:</span> {{ health()!.version }}</div>
-        <div class="info-item"><span>Estado:</span> {{ health()!.status }}</div>
+        <div class="info-item">
+          <span class="info-label">Servicio</span>
+          <span class="info-value">{{ health()!.service }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Versión</span>
+          <span class="info-value">{{ health()!.version }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Estado</span>
+          <span class="info-value status-text" [class.text-success]="health()!.status === 'ok'">{{ health()!.status }}</span>
+        </div>
       </div>
+    } @else if (!loading()) {
+      <p class="offline-message">El servicio no está disponible. Verifica que la aplicación de escritorio esté corriendo.</p>
     }
   </div>
 
-  <div class="card">
-    <div class="status-header">
-      <h2>PIN Pad</h2>
+  <div class="card device-card">
+    <div class="card-header">
+      <div class="header-left">
+        <div class="status-dot" [class.online]="device()?.connected" [class.offline]="!device()?.connected" [class.checking]="loading()"></div>
+        <h2>PIN Pad</h2>
+      </div>
       <span class="badge" [class.online]="device()?.connected" [class.offline]="!device()?.connected">
         {{ device()?.connected ? 'Conectado' : 'Desconectado' }}
       </span>
@@ -28,18 +50,44 @@
 
     @if (device()) {
       <div class="info-grid">
-        <div class="info-item"><span>Puerto:</span> {{ device()!.port }}</div>
-        <div class="info-item"><span>Vendor ID:</span> {{ device()!.vendorId }}</div>
-        <div class="info-item"><span>Descripción:</span> {{ device()!.description }}</div>
+        <div class="info-item">
+          <span class="info-label">Puerto</span>
+          <span class="info-value">{{ device()!.port }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Vendor ID</span>
+          <span class="info-value">{{ device()!.vendorId }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Descripción</span>
+          <span class="info-value">{{ device()!.description }}</span>
+        </div>
       </div>
+    } @else if (!loading()) {
+      <p class="offline-message">No se pudo obtener información del dispositivo.</p>
     }
   </div>
 
   @if (error()) {
-    <div class="card error">{{ error() }}</div>
+    <div class="card error-card">
+      <div class="error-icon">&#9888;</div>
+      <div class="error-content">{{ error() }}</div>
+      <button class="btn-close-error" (click)="error.set('')">&times;</button>
+    </div>
   }
 
-  <button class="btn btn-primary" (click)="refresh()" [disabled]="loading()">
-    {{ loading() ? 'Consultando...' : 'Refrescar' }}
-  </button>
+  <div class="controls">
+    <button class="btn btn-refresh" (click)="refresh()" [disabled]="loading()">
+      @if (loading()) {
+        <span class="spinner"></span> Consultando...
+      } @else {
+        <svg class="refresh-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refrescar
+      }
+    </button>
+    <label class="auto-refresh-toggle">
+      <input type="checkbox" [checked]="autoRefresh()" (change)="toggleAutoRefresh($event)" />
+      Auto-refresh (30s)
+    </label>
+  </div>
 </div>

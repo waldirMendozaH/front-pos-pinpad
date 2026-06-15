@@ -1,30 +1,39 @@
 <div class="pos-container">
-  <h1>POS Pinpad</h1>
+  <div class="page-header">
+    <h1>Procesar Pago</h1>
+  </div>
 
   <div class="card">
-    <h2>Procesar Pago</h2>
+    <h2>Datos del Pago</h2>
 
-    <div class="form-group">
+    <div class="amount-input-group">
       <label for="amount">Monto</label>
-      <input
-        id="amount"
-        type="number"
-        [ngModel]="amount()"
-        (ngModelChange)="amount.set($event)"
-        step="0.01"
-        min="0.01"
-        max="999999.99"
-        placeholder="0.00"
-        [disabled]="loading()"
-      />
+      <div class="amount-wrapper">
+        <span class="currency-prefix">{{ currencyPrefix() }}</span>
+        <input
+          id="amount"
+          type="number"
+          [ngModel]="amount()"
+          (ngModelChange)="amount.set($event)"
+          step="0.01"
+          min="0.01"
+          max="999999.99"
+          placeholder="0.00"
+          [disabled]="loading()"
+          [class.invalid]="amountError()"
+        />
+      </div>
+      @if (amountError()) {
+        <span class="field-error">{{ amountError() }}</span>
+      }
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="currency">Moneda</label>
         <select id="currency" [ngModel]="currency()" (ngModelChange)="currency.set($event)" [disabled]="loading()">
-          <option value="PEN">PEN</option>
-          <option value="USD">USD</option>
+          <option value="PEN">PEN - Soles</option>
+          <option value="USD">USD - Dólares</option>
         </select>
       </div>
       <div class="form-group">
@@ -34,14 +43,19 @@
           type="text"
           [ngModel]="merchantId()"
           (ngModelChange)="merchantId.set($event)"
+          placeholder="1000131"
           [disabled]="loading()"
         />
       </div>
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary" (click)="processPayment()" [disabled]="loading() || amount() <= 0">
-        {{ loading() ? 'Procesando...' : 'Pagar' }}
+      <button class="btn btn-primary btn-lg" (click)="processPayment()" [disabled]="loading() || amount() <= 0">
+        @if (loading()) {
+          <span class="spinner"></span> Procesando...
+        } @else {
+          <span class="icon-pay"></span> Pagar
+        }
       </button>
       <button class="btn btn-danger" (click)="voidPayment()" [disabled]="loading() || !response()">
         Anular
@@ -56,27 +70,80 @@
   </div>
 
   @if (error()) {
-    <div class="card error">
-      <strong>Error:</strong> {{ error() }}
+    <div class="card error-card">
+      <div class="error-icon">&#9888;</div>
+      <div class="error-content">
+        <strong>Error</strong>
+        <p>{{ error() }}</p>
+      </div>
+      <button class="btn-close-error" (click)="error.set('')">&times;</button>
     </div>
   }
 
   @if (response()) {
-    <div class="card response" [class.approved]="response()!.responseCod === '00'" [class.declined]="response()!.responseCod !== '00'">
-      <h2>Respuesta</h2>
-      <table>
-        <tr><td>Código</td><td>{{ response()!.responseCod }}</td></tr>
-        <tr><td>Mensaje</td><td>{{ response()!.message }}</td></tr>
-        <tr><td>Marca</td><td>{{ response()!.brand }}</td></tr>
-        <tr><td>Tarjeta</td><td>{{ response()!.card }}</td></tr>
-        <tr><td>Aprobación</td><td>{{ response()!.approvalCode }}</td></tr>
-        <tr><td>Referencia</td><td>{{ response()!.reference }}</td></tr>
-        <tr><td>Terminal</td><td>{{ response()!.terminalId }}</td></tr>
-        <tr><td>Transacción</td><td>{{ response()!.transactionId }}</td></tr>
-        <tr><td>Lote</td><td>{{ response()!.batchNumber }}</td></tr>
-        <tr><td>Cuotas</td><td>{{ response()!.numInstallments }}</td></tr>
-        <tr><td>Fecha/Hora</td><td>{{ response()!.dateTime }}</td></tr>
-      </table>
+    <div class="card response-card" [class.approved]="response()!.responseCod === '00'" [class.declined]="response()!.responseCod !== '00'">
+      <div class="response-header">
+        <div class="response-icon">
+          @if (response()!.responseCod === '00') {
+            <span class="icon-approved">&#10003;</span>
+          } @else {
+            <span class="icon-declined">&#10007;</span>
+          }
+        </div>
+        <div class="response-title">
+          <h2>{{ response()!.responseCod === '00' ? 'Pago Aprobado' : 'Pago Rechazado' }}</h2>
+          <p>{{ response()!.message }}</p>
+        </div>
+      </div>
+
+      <div class="response-details">
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Marca</span>
+            <span class="detail-value">{{ response()!.brand }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Tarjeta</span>
+            <span class="detail-value">{{ response()!.card }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Código Aprobación</span>
+            <span class="detail-value">{{ response()!.approvalCode || '-' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Referencia</span>
+            <span class="detail-value">{{ response()!.reference }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Terminal</span>
+            <span class="detail-value">{{ response()!.terminalId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Transacción</span>
+            <span class="detail-value">{{ response()!.transactionId }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Lote</span>
+            <span class="detail-value">{{ response()!.batchNumber }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Cuotas</span>
+            <span class="detail-value">{{ response()!.numInstallments || '-' }}</span>
+          </div>
+        </div>
+        <div class="detail-row full-width">
+          <div class="detail-item">
+            <span class="detail-label">Fecha/Hora</span>
+            <span class="detail-value">{{ response()!.dateTime }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   }
 </div>
