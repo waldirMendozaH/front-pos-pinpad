@@ -179,9 +179,12 @@ export class TestChecklistComponent {
     return new Promise((resolve, reject) => {
       const origin = window.location.origin;
       const url = 'https://localhost:8383/health';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10_000);
 
-      fetch(url, { method: 'GET', mode: 'cors', credentials: 'omit' })
+      fetch(url, { method: 'GET', mode: 'cors', credentials: 'omit', signal: controller.signal })
         .then(res => {
+          clearTimeout(timeoutId);
           const allowOrigin = res.headers.get('Access-Control-Allow-Origin');
           const allowPrivateNetwork = res.headers.get('Access-Control-Allow-Private-Network');
 
@@ -201,9 +204,12 @@ export class TestChecklistComponent {
           }
         })
         .catch(err => {
+          clearTimeout(timeoutId);
           const isLocalhost = origin.includes('localhost');
           let hint: string;
-          if (isLocalhost) {
+          if (err.name === 'AbortError') {
+            hint = 'Timeout: El servicio no respondió en 10s. Verifica que Izipay Tray esté corriendo';
+          } else if (isLocalhost) {
             hint = 'No se pudo conectar a https://localhost:8383. Verifica que Izipay Tray esté corriendo y el certificado aceptado';
           } else {
             hint = `Error de red: ${err.message}`;

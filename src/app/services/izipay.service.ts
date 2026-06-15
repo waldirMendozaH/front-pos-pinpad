@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, timeout } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { PaymentRequest } from '../models/payment-request.interface';
 import { PaymentResponse } from '../models/payment-response.interface';
@@ -11,6 +11,9 @@ import { HealthResponse } from '../models/health-response.interface';
 export class IzipayService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = this.getBaseUrl();
+
+  private readonly DEFAULT_TIMEOUT_MS = 120_000;
+  private readonly HEALTH_TIMEOUT_MS = 10_000;
 
   private getBaseUrl(): string {
     if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
@@ -26,7 +29,9 @@ export class IzipayService {
     } else if (error instanceof Error) {
       message = error.message;
     }
-    if (message.includes('Failed to fetch') || message.includes('ERR_CERT') || message.includes('net::ERR')) {
+    if (message.includes('has timed out') || message.includes('TimeoutError')) {
+      message = 'Timeout: El servicio no respondió a tiempo. Verifica que el PIN Pad esté conectado y el servicio corriendo.';
+    } else if (message.includes('Failed to fetch') || message.includes('ERR_CERT') || message.includes('net::ERR')) {
       message = 'No se pudo conectar al servicio Izipay. Verifica que la aplicación esté corriendo en tu equipo y que el certificado sea de confianza.';
     }
     return throwError(() => new Error(message));
@@ -34,30 +39,35 @@ export class IzipayService {
 
   health(): Observable<HealthResponse> {
     return this.http.get<HealthResponse>(`${this.baseUrl}/health`).pipe(
+      timeout(this.HEALTH_TIMEOUT_MS),
       catchError((e) => this.handleError(e))
     );
   }
 
   deviceInfo(): Observable<DeviceInfo> {
     return this.http.get<DeviceInfo>(`${this.baseUrl}/device/info`).pipe(
+      timeout(this.DEFAULT_TIMEOUT_MS),
       catchError((e) => this.handleError(e))
     );
   }
 
   processPayment(request: PaymentRequest): Observable<PaymentResponse> {
     return this.http.post<PaymentResponse>(`${this.baseUrl}/payment/process`, request).pipe(
+      timeout(this.DEFAULT_TIMEOUT_MS),
       catchError((e) => this.handleError(e))
     );
   }
 
   voidPayment(request: PaymentRequest): Observable<PaymentResponse> {
     return this.http.post<PaymentResponse>(`${this.baseUrl}/payment/void`, request).pipe(
+      timeout(this.DEFAULT_TIMEOUT_MS),
       catchError((e) => this.handleError(e))
     );
   }
 
   cancelPayment(): Observable<{ status: string }> {
     return this.http.post<{ status: string }>(`${this.baseUrl}/payment/cancel`, {}).pipe(
+      timeout(15_000),
       catchError((e) => this.handleError(e))
     );
   }

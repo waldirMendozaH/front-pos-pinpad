@@ -1,59 +1,45 @@
-# FrontPosPinpad
+# Front POS PinPad
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+Frontend Angular para procesamiento de pagos con PIN Pad Izipay. Se comunica con el servicio local **Izipay Tray** (`https://localhost:8383`) que actúa como bridge entre el browser y el dispositivo físico.
 
-## Development server
+## Arquitectura
 
-To start a local development server, run:
-
-```bash
-ng serve
+```
+Browser (Angular) → HTTPS localhost:8383 → PIN Pad USB
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Servicio local:** [fps-ws-abax-app-desktop-izipay](../fps-ws-abax-app-desktop-izipay)
+- **Merchant ID:** `1000131` (pruebas)
 
-## Code scaffolding
+## Funcionalidades
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Procesar pagos en PEN y USD
+- Anulación de pagos
+- Cancelación de transacciones
+- Estado del dispositivo en tiempo real
+- Checklist de pruebas automatizadas (16 tests)
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Desarrollo
 
 ```bash
-ng build
+npm install
+npm run dev
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Abre `http://localhost:4200`
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Despliegue en Vercel
 
 ```bash
-ng test
+npm i -g vercel
+vercel login
+vercel --prod
 ```
 
-## Running end-to-end tests
+La app se despliega en `https://front-pos-pinpad.vercel.app`. El CORS del backend ya incluye este origen.
 
-For end-to-end (e2e) testing, run:
+## Requisitos
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Servicio **Izipay Tray** corriendo en `localhost:8383`
+- Certificado self-signed aceptado en el navegador (visitar `https://localhost:8383/health`)
+- PIN Pad conectado por USB
