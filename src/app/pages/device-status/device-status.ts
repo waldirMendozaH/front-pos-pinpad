@@ -27,6 +27,23 @@ export class DeviceStatusComponent implements OnInit, OnDestroy {
     this.stopAutoRefresh();
   }
 
+  getDisplayPort(): string {
+    const port = this.device()?.port || '';
+    if (port.includes('\\') || port.includes('/')) {
+      const parts = port.split(/[\\/]/);
+      return parts[parts.length - 1];
+    }
+    return port;
+  }
+
+  getDisplayVendorId(): string {
+    const vendorId = this.device()?.vendorId || '';
+    if (vendorId.endsWith('.dll') || vendorId.endsWith('.so') || vendorId.endsWith('.dylib')) {
+      return vendorId.replace(/\.(dll|so|dylib)$/i, '');
+    }
+    return vendorId;
+  }
+
   refresh(): void {
     this.loading.set(true);
     this.error.set('');

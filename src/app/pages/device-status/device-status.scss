@@ -113,8 +113,17 @@
 
 .info-item {
   transition: background 0.2s;
+  min-width: 0;
 
   &:hover {
     background: #e8ecef;
+  }
+
+  .info-value {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    display: block;
   }
 }
