@@ -9,7 +9,7 @@ Browser (Angular) → HTTPS localhost:8383 → PIN Pad USB
 ```
 
 - **Servicio local:** [fps-ws-abax-app-desktop-izipay](../fps-ws-abax-app-desktop-izipay)
-- **Merchant ID:** `1000131` (pruebas)
+- **Merchant ID:** `10361169` (pruebas)
 
 ## Funcionalidades
 

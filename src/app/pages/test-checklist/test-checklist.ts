@@ -228,7 +228,7 @@ export class TestChecklistComponent {
         : amount === 100.0 ? 'payment-large'
         : 'payment-decimals';
 
-      this.izipayService.processPayment({ amount, currency, merchantId: '1000131', transactionId: txId }).subscribe({
+      this.izipayService.processPayment({ amount, currency, merchantId: '10361169', transactionId: txId }).subscribe({
         next: (res) => {
           this.lastPaymentResult.set(res);
           const approved = res.responseCod === '00';
@@ -255,7 +255,7 @@ export class TestChecklistComponent {
       this.izipayService.voidPayment({
         amount: 1.0,
         currency: 'PEN',
-        merchantId: '1000131',
+        merchantId: '10361169',
         transactionId: last.transactionId
       }).subscribe({
         next: (res) => {
@@ -291,7 +291,7 @@ export class TestChecklistComponent {
       const txId = `TEST-ERR-${Date.now()}`;
       const testId = amount === 0 ? 'error-zero' : 'error-negative';
 
-      this.izipayService.processPayment({ amount, currency, merchantId: '1000131', transactionId: txId }).subscribe({
+      this.izipayService.processPayment({ amount, currency, merchantId: '10361169', transactionId: txId }).subscribe({
         next: (res) => {
           if (res.responseCod !== '00') {
             this.setTestResult(testId, 'passed', `Rechazado correctamente: ${res.message}`);
@@ -332,7 +332,7 @@ export class TestChecklistComponent {
   private testResponseFields(): Promise<void> {
     return new Promise((resolve, reject) => {
       const txId = `TEST-FIELDS-${Date.now()}`;
-      this.izipayService.processPayment({ amount: 1.0, currency: 'PEN', merchantId: '1000131', transactionId: txId }).subscribe({
+      this.izipayService.processPayment({ amount: 1.0, currency: 'PEN', merchantId: '10361169', transactionId: txId }).subscribe({
         next: (res) => {
           const requiredFields = ['responseCod', 'message', 'brand', 'card', 'approvalCode', 'reference', 'terminalId', 'transactionId', 'batchNumber', 'dateTime'];
           const missing = requiredFields.filter(f => !(f in res));
@@ -359,7 +359,7 @@ export class TestChecklistComponent {
           this.izipayService.processPayment({
             amount: 1.0,
             currency: 'PEN',
-            merchantId: '1000131',
+            merchantId: '10361169',
             transactionId: `TEST-CONC-${Date.now()}-${i}`
           }).subscribe({ next: res, error: rej });
         })
@@ -410,7 +410,7 @@ export class TestChecklistComponent {
         this.izipayService.processPayment({
           amount: sale.amount,
           currency: sale.currency,
-          merchantId: '1000131',
+          merchantId: '10361169',
           transactionId: txId
         }).subscribe({
           next: (res) => {
@@ -472,7 +472,7 @@ export class TestChecklistComponent {
         this.izipayService.processPayment({
           amount: sale.amount,
           currency: sale.currency,
-          merchantId: '1000131',
+          merchantId: '10361169',
           transactionId: txId
         }).subscribe({
           next: (res) => {

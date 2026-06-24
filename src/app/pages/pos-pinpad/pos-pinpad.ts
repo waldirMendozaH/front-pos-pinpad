@@ -14,7 +14,7 @@ export class PosPinpadComponent {
 
   readonly amount = signal<number>(0);
   readonly currency = signal<string>('PEN');
-  readonly merchantId = signal<string>('1000131');
+  readonly merchantId = signal<string>('10361169');
   readonly loading = signal<boolean>(false);
   readonly response = signal<PaymentResponse | null>(null);
   readonly error = signal<string>('');
